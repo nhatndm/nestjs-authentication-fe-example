@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Container, Alert } from 'reactstrap';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// COMPONENT
+import SignUp from './Form/Signup';
+
+// STYLE
+import './App.css';
+import SignIn from './Form/Signin';
+
+interface State {
+  token: string;
 }
+
+const App = () => {
+  const [localState, setLocalState] = useState<State>({
+    token: '',
+  });
+
+  const isAuthenticated = localState.token.length > 0;
+
+  const handleSigninSubmit = (token: string) => {
+    setLocalState({ token });
+  };
+
+  return (
+    <Container className='app'>
+      {isAuthenticated && (
+        <Alert color='warning'>
+          The token will be expired if you refresh the page
+        </Alert>
+      )}
+      {!isAuthenticated && <SignUp />}
+      <hr />
+      {!isAuthenticated && <SignIn submit={handleSigninSubmit} />}
+
+      {isAuthenticated && (
+        <p className='text-info token-wrapper'>
+          Your token is: <span>{localState.token}</span>
+        </p>
+      )}
+    </Container>
+  );
+};
 
 export default App;
